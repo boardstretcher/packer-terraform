@@ -1,0 +1,6 @@
+{
+  "esxi_host": "vmh01.dev.net",
+  "esxi_datastore": "vm-ds01.dev.net",
+  "esxi_username": "JENKINS_U",
+  "esxi_password": "JENKINS_P"
+}
