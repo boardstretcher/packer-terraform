@@ -1,0 +1,58 @@
+{
+  "builders":
+  [
+    {
+      "name": "stage0",
+      "vm_name": "stage0_host",
+      "type": "vmware-iso",
+      "guest_os_type": "centos-64",
+      "headless": true,
+
+      "iso_url": "http://mirrors.lug.mtu.edu/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1708.iso",
+      "iso_checksum": "5848f2fd31c7acf3811ad88eaca6f4aa",
+      "iso_checksum_type": "md5",
+
+      "ssh_username": "root",
+      "ssh_password": "ourpassword",
+      "ssh_wait_timeout": "6000s",
+
+      "shutdown_command": "shutdown -P now",
+      "boot_wait": "5s",
+      "boot_command": [
+        "<tab> text ks=https://dev.net/packer/cent7-kickstart.html<enter><wait>"
+      ],
+
+      "remote_type": "esx5",
+      "remote_host": "{{user `esxi_host`}}",
+      "remote_datastore": "{{user `esxi_datastore`}}",
+      "remote_username": "{{user `esxi_username`}}",
+      "remote_password": "{{user `esxi_password`}}",
+      "keep_registered": true,
+      "version": "10",
+      "format": "vmx",
+
+	  "disk_size": "30720",
+	  "disk_type_id": "thin",
+
+      "vmx_data": {
+        "memsize": "2048",
+        "numvcpus": "2",
+        "ethernet0.present": "true",
+        "ethernet0.virtualDev": "vmxnet3",
+        "ethernet0.startConnected": "true",
+        "ethernet0.networkName": "Vlan 1",
+        "vcpu.hotadd": "TRUE",
+        "mem.hotadd": "TRUE",
+        "floppy0.present": "FALSE"
+      }
+    }
+  ],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sleep 30",
+      "yum remove -y acpid* quota* abrt* psacct* smartmontools* iwl*-firmware ipw*-firmware b43* cpuspeed smartmontools",
+      "yum install -y aide at atop audit authconfig-gtk autoconf automake bc bind-utils check-mk-agent cifs-utils compat-glibc deltarpm dos2unix glibc.i686 krb5-workstation libsss_sudo inotify-tools logwatch lsof m2crypto man mailx mlocate nc net-tools nfs-utils nfs4-acl-tools nmap ntp ntpdate numactl oddjob oddjob-mkhomedir openldap-clients openssh-clients ossec-hids ossec-hids-client parted pciutils postfix rhn-check rhn-client-tools rhn-setup rhnlib rhnsd rsync samba sssd sssd-ad sssd-client sssd-ldap strace sudo sysstat system-storage-manager tcp_wrappers tcpdump telnet traceroute unix2dos unzip wget xterm xinetd xauth xorg-x11-xauth yum-rhn-plugin yum-utils vim-enhanced zip perl tuned open-vm-tools"
+        ]
+   }]
+}
